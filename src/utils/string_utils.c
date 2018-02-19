@@ -16,6 +16,9 @@ STRING* CENGINE_CALL new_string(const char* str)
 
 void    CENGINE_CALL free_string(STRING* str)
 {
+    assert(str != NULL);
+    str->_cstr = NULL;
+    free(str->_cstr);
     str = NULL;
     free(str);
 }

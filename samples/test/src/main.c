@@ -14,9 +14,10 @@ int main(int argc, char** argv)
     string_append(str, str1);
     free_string(str1);
 
-    STRING* substr = string_substr(str, 1, 11);
+    STRING* substr = string_substr(str, 8, 4);
 
     printf("Substring is: %s\n\n", string_cstr(substr));
+    free_string(substr);
 
     printf("String is now: %s\n\n", string_cstr(str));
     free_string(str);
