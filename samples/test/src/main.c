@@ -1,8 +1,8 @@
 
-#include <window.h>
-#include <input.h>
-#include <vector_math.h>
-#include <string_utils.h>
+#include <core/window.h>
+#include <core/input.h>
+#include <math/vector_math.h>
+#include <utils/string_utils.h>
 
 int main(int argc, char** argv)
 {

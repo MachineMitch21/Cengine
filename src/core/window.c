@@ -1,5 +1,5 @@
 
-#include <window.h>
+#include <core/window.h>
 
 struct Window_s {
     GLFWwindow*     _context;

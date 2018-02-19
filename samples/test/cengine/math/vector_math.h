@@ -4,7 +4,7 @@
 
 #include <preprocessor.h>
 #include <math.h>
-#include <string_utils.h>
+#include <utils/string_utils.h>
 
 typedef struct vec2_f {
     float x, y;

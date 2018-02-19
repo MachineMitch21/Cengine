@@ -2,7 +2,7 @@
 #ifndef INPUT_H
 #define INPUT_H
 
-#include <window.h>
+#include <core/window.h>
 #include <preprocessor.h>
 
 #define MAX_KEYS 1024

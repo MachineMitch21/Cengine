@@ -2,7 +2,10 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.5)
 
 project(cengine)
 
-file(GLOB SOURCES src/*.c src/*.cc src/math/*.c src/math/*.cc)
+file(GLOB SOURCES   src/*.c         src/*.cc
+                    src/math/*.c    src/math/*.cc
+                    src/core/*.c    src/core/*.cc
+                    src/utils/*.c   src/utils/*.cc  )
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
 

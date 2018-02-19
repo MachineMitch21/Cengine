@@ -3,7 +3,7 @@
 #define WINDOW_H
 
 #include <preprocessor.h>
-#include <string_utils.h>
+#include <utils/string_utils.h>
 
 #include <stdio.h>
 #include <stdlib.h>
