@@ -31,7 +31,7 @@ void    CENGINE_CALL string_append(STRING* str1, const STRING* str2)
 {
     assert(str1 != NULL && str2 != NULL);
 
-    str1->_cstr = (char*) realloc(str1->_cstr, string_length(str1) + string_length(str2));
+    str1->_cstr = (char*) realloc(str1->_cstr, sizeof(char) * (string_length(str1) + string_length(str2)));
 
     strcat(str1->_cstr, str2->_cstr);
 }
@@ -39,7 +39,7 @@ void    CENGINE_CALL string_append(STRING* str1, const STRING* str2)
 void    CENGINE_CALL string_append_c(STRING* str1, const char* str2)
 {
     assert(str1 != NULL);
-    str1->_cstr = (char*) realloc(str1->_cstr, string_length(str1) + strlen(str2));
+    str1->_cstr = (char*) realloc(str1->_cstr, sizeof(char) * (string_length(str1) + strlen(str2)));
 
     strcat(str1->_cstr, str2);
 }
@@ -54,7 +54,7 @@ STRING* CENGINE_CALL string_substr(const STRING* str, int start_pos, int length)
 {
     int i;
 
-    char* temp = (char*) malloc(length + 1);
+    char* temp = (char*) malloc(sizeof(char) * (length + 1));
 
     for (i = 0; i < length; i++)
     {
