@@ -26,7 +26,10 @@ int main(int argc, char** argv)
     vec3_f test1 = vec3f(8, 2, 24);
     vec4_f test2 = vec4f(68, 23, 92, 10);
 
-    printf("Test vec2 magnitude is: %f", vec2_magnitude_f(&test));
+    // STRING* test_toString = vec2_toString_f(&test);
+    // printf("test: %s\n", string_cstr(test_toString));
+    
+    printf("Test vec2 magnitude is: %f\n", vec2_magnitude_f(&test));
 
     init_input(p_window);
 

@@ -5,6 +5,7 @@
 #include <preprocessor.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include <assert.h>
 
 typedef struct String_s STRING;
@@ -21,6 +22,8 @@ extern "C"
     CENGINE_API void    CENGINE_CALL string_append_c(STRING* str1, const char* str2);
     CENGINE_API int     CENGINE_CALL string_length(const STRING* str);
     CENGINE_API STRING* CENGINE_CALL string_substr(const STRING* str, int start_pos, int length);
+
+    CENGINE_API STRING* CENGINE_CALL ftoa(float n, char* res, int afterpoint);
 
 #ifdef __cplusplus
 }

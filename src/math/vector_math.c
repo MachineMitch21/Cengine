@@ -45,7 +45,23 @@ vec2_f      CENGINE_CALL vec2_subtract_f(const vec2_f* v1, const vec2_f* v2)
 
 STRING* CENGINE_CALL vec2_toString_f(const vec2_f* v)
 {
+    char* temp = (char*) malloc(sizeof(char) * 32);
 
+    STRING* x = ftoa(v->x, temp, 2);
+    temp = NULL;
+    STRING* y = ftoa(v->y, temp, 2);
+    temp = NULL;
+
+    STRING* vec2_string = new_string("VEC2 { ");
+    string_append(vec2_string, x);
+    string_append(vec2_string, ", ");
+    string_append(vec2_string, y);
+    string_append(vec2_string, "} ");
+
+    free_string(x);
+    free_string(y);
+    free(temp);
+    return vec2_string;
 }
 
 // -------------------------------------------------------------------
