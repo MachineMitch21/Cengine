@@ -79,8 +79,6 @@ Matrix_4f CENGINE_CALL matrix4f_elements(float matVars[16])
     matrix._elements[3][2] = matVars[14];
     matrix._elements[3][3] = matVars[15];
 
-    print_matrix(&matrix);
-
     return matrix;
 }
 
@@ -303,7 +301,8 @@ Matrix_4f*  CENGINE_CALL matrix4f_multiply(Matrix_4f* m1, const Matrix_4f* m2)
                                 (m1->_elements[3][3] * m2->_elements[3][3]) );
     */
 
-    // Tightly knitted O(n^3) algorithm that does the exact same thing
+    // Tightly knitted O(n^3) algorithm that does the exact same thing as the above block of code
+    // Or it may be O(1) since the inputs are constant in this case.  I think thats how Big O works lol
     for (int i = 0; i < 4; i++)
     {
         for (int j = 0; j < 4; j++)
@@ -317,6 +316,7 @@ Matrix_4f*  CENGINE_CALL matrix4f_multiply(Matrix_4f* m1, const Matrix_4f* m2)
         }
     }
 
+    // Move temp's elements over to m1
     memmove(m1->_elements, temp._elements, sizeof(float) * 16);
     return m1;
 }
@@ -366,6 +366,7 @@ float*      CENGINE_CALL matrix4f_value(const Matrix_4f* matrix)
 
 void        CENGINE_CALL print_matrix(const Matrix_4f* m)
 {
+    printf("\n");
     for (int i = 0; i < 4; i++)
     {
         for (int j = 0; j < 4; j++)
@@ -374,4 +375,5 @@ void        CENGINE_CALL print_matrix(const Matrix_4f* m)
         }
         printf("\n");
     }
+    printf("\n");
 }

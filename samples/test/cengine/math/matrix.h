@@ -5,7 +5,7 @@
 #include <preprocessor.h>
 #include <math/vector_math.h>
 #include <math/math_helpers.h>
-#include <stdlib.h>
+#include <memory.h>
 #include <stdio.h>
 
 typedef struct {
