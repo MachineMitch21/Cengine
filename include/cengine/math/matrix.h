@@ -8,7 +8,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-typedef struct Matrix_4f Matrix_4f;
+typedef struct {
+    float _elements[4][4];
+} Matrix_4f;
 
 #ifdef __cplusplus
 extern "C"
@@ -19,7 +21,7 @@ CENGINE_API Matrix_4f CENGINE_CALL matrix4f_slr(float d);
 
 CENGINE_API Matrix_4f CENGINE_CALL matrix4f_4v(vec4_f col1, vec4_f col2, vec4_f col3, vec4_f col4);
 
-CENGINE_API Matrix_4f CENGINE_CALL matrix4f_arr(float matVars[16]);
+CENGINE_API Matrix_4f CENGINE_CALL matrix4f_elements(float matVars[16]);
 
 CENGINE_API Matrix_4f CENGINE_CALL matrix4f_all(    float Xx, float Xy, float Xz, float Xo,
                                                     float Yx, float Yy, float Yz, float Yo,
@@ -35,8 +37,10 @@ CENGINE_API Matrix_4f   CENGINE_CALL matrix4f_rotate        (Matrix_4f* m, const
 CENGINE_API Matrix_4f   CENGINE_CALL matrix4f_scale         (Matrix_4f* m, const vec3_f* v);
 CENGINE_API Matrix_4f*  CENGINE_CALL matrix4f_transpose     (Matrix_4f* m);
 CENGINE_API Matrix_4f*  CENGINE_CALL matrix4f_multiply      (Matrix_4f* m1, const Matrix_4f* m2);
-vec4_f                  CENGINE_CALL matrix4f_multiply_vec4f(Matrix_4f* m, const vec4_f* v);
+CENGINE_API vec4_f      CENGINE_CALL matrix4f_multiply_vec4f(Matrix_4f* m, const vec4_f* v);
 CENGINE_API float*      CENGINE_CALL matrix4f_value         (const Matrix_4f* m);
+
+CENGINE_API void        CENGINE_CALL print_matrix           (const Matrix_4f* m);
 
 #ifdef __cplusplus
 }

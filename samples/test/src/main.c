@@ -2,6 +2,7 @@
 #include <core/window.h>
 #include <core/input.h>
 #include <math/vector_math.h>
+#include <math/matrix.h>
 #include <utils/string_utils.h>
 
 int main(int argc, char** argv)
@@ -28,8 +29,32 @@ int main(int argc, char** argv)
 
     // STRING* test_toString = vec2_toString_f(&test);
     // printf("test: %s\n", string_cstr(test_toString));
-    
+
     printf("Test vec2 magnitude is: %f\n", vec2_magnitude_f(&test));
+
+    float test1_elems[] =
+    {
+        43.0f, 34.3f, 2.5f, 9.4f,
+        12.0f, 34.2f, 2.1f, 5.4f,
+        44.0f, 11.5f, 12.3f, 8.0f,
+        1.0f, 4.3f, 2.3f, 1.2f
+    };
+
+    float test2_elems[] =
+    {
+        45.0f, 34.3f, 2.5f, 5.4f,
+        12.0f, 4.2f, 2.1f, 5.4f,
+        44.0f, 1.5f, 12.3f, 8.0f,
+        1.0f, 4.3f, 2.3f, 1.2f
+    };
+
+    Matrix_4f test1_mat = matrix4f_elements(test1_elems);
+    print_matrix(&test1_mat);
+    Matrix_4f test2_mat = matrix4f_elements(test2_elems);
+
+    Matrix_4f* result_mat = matrix4f_multiply(&test1_mat, &test2_mat);
+
+    print_matrix(result_mat);
 
     init_input(p_window);
 

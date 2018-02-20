@@ -1,10 +1,6 @@
 
 #include <math/matrix.h>
 
-struct Matrix_4f {
-    float _elements[4][4];
-};
-
 Matrix_4f CENGINE_CALL matrix4f_diagonal(float d)
 {
     Matrix_4f matrix;
@@ -82,6 +78,8 @@ Matrix_4f CENGINE_CALL matrix4f_elements(float matVars[16])
     matrix._elements[3][1] = matVars[13];
     matrix._elements[3][2] = matVars[14];
     matrix._elements[3][3] = matVars[15];
+
+    print_matrix(&matrix);
 
     return matrix;
 }
@@ -219,90 +217,107 @@ Matrix_4f*  CENGINE_CALL matrix4f_multiply(Matrix_4f* m1, const Matrix_4f* m2)
 {
     Matrix_4f temp = matrix4f_diagonal(1.0f);
 
+    /*
+    Tedious multiplication for each index
     // First Row ---------------------------------------------------------------
     temp._elements[0][0] =  (   (m1->_elements[0][0] * m2->_elements[0][0]) +
-                                (m1->_elements[1][0] * m2->_elements[0][1]) +
-                                (m1->_elements[2][0] * m2->_elements[0][2]) +
-                                (m1->_elements[3][0] * m2->_elements[0][3]) );
+                                (m1->_elements[0][1] * m2->_elements[1][0]) +
+                                (m1->_elements[0][2] * m2->_elements[2][0]) +
+                                (m1->_elements[0][3] * m2->_elements[3][0]) );
 
-    temp._elements[0][1] =  (   (m1->_elements[0][1] * m2->_elements[0][0]) +
-                                (m1->_elements[1][1] * m2->_elements[0][1]) +
-                                (m1->_elements[2][1] * m2->_elements[0][2]) +
-                                (m1->_elements[3][1] * m2->_elements[0][3]) );
+    temp._elements[0][1] =  (   (m1->_elements[0][0] * m2->_elements[0][1]) +
+                                (m1->_elements[0][1] * m2->_elements[1][1]) +
+                                (m1->_elements[0][2] * m2->_elements[2][1]) +
+                                (m1->_elements[0][3] * m2->_elements[3][1]) );
 
-    temp._elements[0][2] =  (   (m1->_elements[0][2] * m2->_elements[0][0]) +
-                                (m1->_elements[1][2] * m2->_elements[0][1]) +
-                                (m1->_elements[2][2] * m2->_elements[0][2]) +
-                                (m1->_elements[3][2] * m2->_elements[0][3]) );
+    temp._elements[0][2] =  (   (m1->_elements[0][0] * m2->_elements[0][2]) +
+                                (m1->_elements[0][1] * m2->_elements[1][2]) +
+                                (m1->_elements[0][2] * m2->_elements[2][2]) +
+                                (m1->_elements[0][3] * m2->_elements[3][2]) );
 
-    temp._elements[0][3] =  (   (m1->_elements[0][3] * m2->_elements[0][0]) +
-                                (m1->_elements[1][3] * m2->_elements[0][1]) +
-                                (m1->_elements[2][3] * m2->_elements[0][2]) +
-                                (m1->_elements[3][3] * m2->_elements[0][3]) );
+    temp._elements[0][3] =  (   (m1->_elements[0][0] * m2->_elements[0][3]) +
+                                (m1->_elements[0][1] * m2->_elements[1][3]) +
+                                (m1->_elements[0][2] * m2->_elements[2][3]) +
+                                (m1->_elements[0][3] * m2->_elements[3][3]) );
 
     // Second Row ---------------------------------------------------------------
-    temp._elements[1][0] =  (   (m1->_elements[0][0] * m2->_elements[1][0]) +
-                                (m1->_elements[1][0] * m2->_elements[1][1]) +
-                                (m1->_elements[2][0] * m2->_elements[1][2]) +
-                                (m1->_elements[3][0] * m2->_elements[1][3]) );
+    temp._elements[1][0] =  (   (m1->_elements[1][0] * m2->_elements[0][0]) +
+                                (m1->_elements[1][1] * m2->_elements[1][0]) +
+                                (m1->_elements[1][2] * m2->_elements[2][0]) +
+                                (m1->_elements[1][3] * m2->_elements[3][0]) );
 
-    temp._elements[1][1] =  (   (m1->_elements[0][1] * m2->_elements[1][0]) +
+    temp._elements[1][1] =  (   (m1->_elements[1][0] * m2->_elements[0][1]) +
                                 (m1->_elements[1][1] * m2->_elements[1][1]) +
-                                (m1->_elements[2][1] * m2->_elements[1][2]) +
-                                (m1->_elements[3][1] * m2->_elements[1][3]) );
-
-    temp._elements[1][2] =  (   (m1->_elements[0][2] * m2->_elements[1][0]) +
-                                (m1->_elements[1][2] * m2->_elements[1][1]) +
-                                (m1->_elements[2][2] * m2->_elements[1][2]) +
-                                (m1->_elements[3][2] * m2->_elements[1][3]) );
-
-    temp._elements[1][3] =  (   (m1->_elements[0][3] * m2->_elements[1][0]) +
-                                (m1->_elements[1][3] * m2->_elements[1][1]) +
-                                (m1->_elements[2][3] * m2->_elements[1][2]) +
-                                (m1->_elements[3][3] * m2->_elements[1][3]) );
-    // Third Row ---------------------------------------------------------------
-    temp._elements[2][0] =  (   (m1->_elements[0][0] * m2->_elements[2][0]) +
-                                (m1->_elements[1][0] * m2->_elements[2][1]) +
-                                (m1->_elements[2][0] * m2->_elements[2][2]) +
-                                (m1->_elements[3][0] * m2->_elements[2][3]) );
-
-    temp._elements[2][1] =  (   (m1->_elements[0][1] * m2->_elements[2][0]) +
-                                (m1->_elements[1][1] * m2->_elements[2][1]) +
-                                (m1->_elements[2][1] * m2->_elements[2][2]) +
-                                (m1->_elements[3][1] * m2->_elements[2][3]) );
-
-    temp._elements[2][2] =  (   (m1->_elements[0][2] * m2->_elements[2][0]) +
                                 (m1->_elements[1][2] * m2->_elements[2][1]) +
-                                (m1->_elements[2][2] * m2->_elements[2][2]) +
-                                (m1->_elements[3][2] * m2->_elements[2][3]) );
+                                (m1->_elements[1][3] * m2->_elements[3][1]) );
 
-    temp._elements[2][3] =  (   (m1->_elements[0][3] * m2->_elements[2][0]) +
-                                (m1->_elements[1][3] * m2->_elements[2][1]) +
-                                (m1->_elements[2][3] * m2->_elements[2][2]) +
-                                (m1->_elements[3][3] * m2->_elements[2][3]) );
+    temp._elements[1][2] =  (   (m1->_elements[1][0] * m2->_elements[0][2]) +
+                                (m1->_elements[1][1] * m2->_elements[1][2]) +
+                                (m1->_elements[1][2] * m2->_elements[2][2]) +
+                                (m1->_elements[1][3] * m2->_elements[3][2]) );
+
+    temp._elements[1][3] =  (   (m1->_elements[1][0] * m2->_elements[0][3]) +
+                                (m1->_elements[1][1] * m2->_elements[1][3]) +
+                                (m1->_elements[1][2] * m2->_elements[2][3]) +
+                                (m1->_elements[1][3] * m2->_elements[3][3]) );
+    // Third Row ---------------------------------------------------------------
+    temp._elements[2][0] =  (   (m1->_elements[2][0] * m2->_elements[0][0]) +
+                                (m1->_elements[2][1] * m2->_elements[1][0]) +
+                                (m1->_elements[2][2] * m2->_elements[2][0]) +
+                                (m1->_elements[2][3] * m2->_elements[3][0]) );
+
+    temp._elements[2][1] =  (   (m1->_elements[2][0] * m2->_elements[0][1]) +
+                                (m1->_elements[2][1] * m2->_elements[1][1]) +
+                                (m1->_elements[2][2] * m2->_elements[2][1]) +
+                                (m1->_elements[2][3] * m2->_elements[3][1]) );
+
+    temp._elements[2][2] =  (   (m1->_elements[2][0] * m2->_elements[0][2]) +
+                                (m1->_elements[2][1] * m2->_elements[1][2]) +
+                                (m1->_elements[2][2] * m2->_elements[2][2]) +
+                                (m1->_elements[2][3] * m2->_elements[3][2]) );
+
+    temp._elements[2][3] =  (   (m1->_elements[2][0] * m2->_elements[0][3]) +
+                                (m1->_elements[2][1] * m2->_elements[1][3]) +
+                                (m1->_elements[2][2] * m2->_elements[2][3]) +
+                                (m1->_elements[2][3] * m2->_elements[3][3]) );
 
     // Fourth Row ---------------------------------------------------------------
-    temp._elements[3][0] =  (   (m1->_elements[0][0] * m2->_elements[3][0]) +
-                                (m1->_elements[1][0] * m2->_elements[3][1]) +
-                                (m1->_elements[2][0] * m2->_elements[3][2]) +
-                                (m1->_elements[3][0] * m2->_elements[3][3]) );
+    temp._elements[3][0] =  (   (m1->_elements[3][0] * m2->_elements[0][0]) +
+                                (m1->_elements[3][1] * m2->_elements[1][0]) +
+                                (m1->_elements[3][2] * m2->_elements[2][0]) +
+                                (m1->_elements[3][3] * m2->_elements[3][0]) );
 
-    temp._elements[3][1] =  (   (m1->_elements[0][1] * m2->_elements[3][0]) +
-                                (m1->_elements[1][1] * m2->_elements[3][1]) +
-                                (m1->_elements[2][1] * m2->_elements[3][2]) +
-                                (m1->_elements[3][1] * m2->_elements[3][3]) );
+    temp._elements[3][1] =  (   (m1->_elements[3][0] * m2->_elements[0][1]) +
+                                (m1->_elements[3][1] * m2->_elements[1][1]) +
+                                (m1->_elements[3][2] * m2->_elements[2][1]) +
+                                (m1->_elements[3][3] * m2->_elements[3][1]) );
 
-    temp._elements[3][2] =  (   (m1->_elements[0][2] * m2->_elements[3][0]) +
-                                (m1->_elements[1][2] * m2->_elements[3][1]) +
-                                (m1->_elements[2][2] * m2->_elements[3][2]) +
-                                (m1->_elements[3][2] * m2->_elements[3][3]) );
+    temp._elements[3][2] =  (   (m1->_elements[3][0] * m2->_elements[0][2]) +
+                                (m1->_elements[3][1] * m2->_elements[1][2]) +
+                                (m1->_elements[3][2] * m2->_elements[2][2]) +
+                                (m1->_elements[3][3] * m2->_elements[3][2]) );
 
-    temp._elements[3][3] =  (   (m1->_elements[0][3] * m2->_elements[3][0]) +
-                                (m1->_elements[1][3] * m2->_elements[3][1]) +
-                                (m1->_elements[2][3] * m2->_elements[3][2]) +
+    temp._elements[3][3] =  (   (m1->_elements[3][0] * m2->_elements[0][3]) +
+                                (m1->_elements[3][1] * m2->_elements[1][3]) +
+                                (m1->_elements[3][2] * m2->_elements[2][3]) +
                                 (m1->_elements[3][3] * m2->_elements[3][3]) );
+    */
 
-    *m1 = temp;
+    // Tightly knitted O(n^3) algorithm that does the exact same thing
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            float sum = 0;
+            for (int k = 0; k < 4; k++)
+            {
+                sum = sum + (m1->_elements[i][k] * m2->_elements[k][j]);
+            }
+            temp._elements[i][j] = sum;
+        }
+    }
+
+    memmove(m1->_elements, temp._elements, sizeof(float) * 16);
     return m1;
 }
 
@@ -347,4 +362,16 @@ float*      CENGINE_CALL matrix4f_value(const Matrix_4f* matrix)
     elements[15]    = matrix->_elements[3][3];
 
     return elements;
+}
+
+void        CENGINE_CALL print_matrix(const Matrix_4f* m)
+{
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            printf("%.2f ", m->_elements[i][j]);
+        }
+        printf("\n");
+    }
 }
