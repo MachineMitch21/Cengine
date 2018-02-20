@@ -9,25 +9,25 @@ Matrix_4f CENGINE_CALL matrix4f_diagonal(float d)
 {
     Matrix_4f matrix;
 
-    matrix->_elements[0][0] = d;
-    matrix->_elements[0][1] = 0.0f;
-    matrix->_elements[0][2] = 0.0f;
-    matrix->_elements[0][3] = 0.0f;
+    matrix._elements[0][0] = d;
+    matrix._elements[0][1] = 0.0f;
+    matrix._elements[0][2] = 0.0f;
+    matrix._elements[0][3] = 0.0f;
 
-    matrix->_elements[1][0] = 0.0f;
-    matrix->_elements[1][1] = d;
-    matrix->_elements[1][2] = 0.0f;
-    matrix->_elements[1][3] = 0.0f;
+    matrix._elements[1][0] = 0.0f;
+    matrix._elements[1][1] = d;
+    matrix._elements[1][2] = 0.0f;
+    matrix._elements[1][3] = 0.0f;
 
-    matrix->_elements[2][0] = 0.0f;
-    matrix->_elements[2][1] = 0.0f;
-    matrix->_elements[2][2] = d;
-    matrix->_elements[2][3] = 0.0f;
+    matrix._elements[2][0] = 0.0f;
+    matrix._elements[2][1] = 0.0f;
+    matrix._elements[2][2] = d;
+    matrix._elements[2][3] = 0.0f;
 
-    matrix->_elements[3][0] = 0.0f;
-    matrix->_elements[3][1] = 0.0f;
-    matrix->_elements[3][2] = 0.0f;
-    matrix->_elements[3][3] = d;
+    matrix._elements[3][0] = 0.0f;
+    matrix._elements[3][1] = 0.0f;
+    matrix._elements[3][2] = 0.0f;
+    matrix._elements[3][3] = d;
 
     return matrix;
 }
@@ -63,25 +63,25 @@ Matrix_4f CENGINE_CALL matrix4f_elements(float matVars[16])
 {
     Matrix_4f matrix;
 
-    matrix->_elements[0][0] = matVars[0];
-    matrix->_elements[0][1] = matVars[1];
-    matrix->_elements[0][2] = matVars[2];
-    matrix->_elements[0][3] = matVars[3];
+    matrix._elements[0][0] = matVars[0];
+    matrix._elements[0][1] = matVars[1];
+    matrix._elements[0][2] = matVars[2];
+    matrix._elements[0][3] = matVars[3];
 
-    matrix->_elements[1][0] = matVars[4];
-    matrix->_elements[1][1] = matVars[5];
-    matrix->_elements[1][2] = matVars[6];
-    matrix->_elements[1][3] = matVars[7];
+    matrix._elements[1][0] = matVars[4];
+    matrix._elements[1][1] = matVars[5];
+    matrix._elements[1][2] = matVars[6];
+    matrix._elements[1][3] = matVars[7];
 
-    matrix->_elements[2][0] = matVars[8];
-    matrix->_elements[2][1] = matVars[9];
-    matrix->_elements[2][2] = matVars[10];
-    matrix->_elements[2][3] = matVars[11];
+    matrix._elements[2][0] = matVars[8];
+    matrix._elements[2][1] = matVars[9];
+    matrix._elements[2][2] = matVars[10];
+    matrix._elements[2][3] = matVars[11];
 
-    matrix->_elements[3][0] = matVars[12];
-    matrix->_elements[3][1] = matVars[13];
-    matrix->_elements[3][2] = matVars[14];
-    matrix->_elements[3][3] = matVars[15];
+    matrix._elements[3][0] = matVars[12];
+    matrix._elements[3][1] = matVars[13];
+    matrix._elements[3][2] = matVars[14];
+    matrix._elements[3][3] = matVars[15];
 
     return matrix;
 }
@@ -132,44 +132,190 @@ Matrix_4f   CENGINE_CALL matrix4f_orthographic(float left, float right, float bo
 
 Matrix_4f   CENGINE_CALL matrix4f_look_at(const vec3_f* eye, const vec3_f* target, const vec3_f* up)
 {
-    Matrix_4f matrix;
+    vec3_f zDir     = vec3_subtract_f(eye, target);
+    vec3_f zAxis    = vec3_normalize_f(&zDir);
+    vec3_f upCrossZ = vec3_cross_f(up, &zAxis);
+    vec3_f xAxis    = vec3_normalize_f(&upCrossZ);
+    vec3_f zCrossX  = vec3_cross_f(&zAxis, &xAxis);
+    vec3_f yAxis    = vec3_normalize_f(&zCrossX);
 
-    return matrix;
+    float t1    = vec3_dot_f(&xAxis, eye);
+    float t2    = vec3_dot_f(&yAxis, eye);
+    float t3    = vec3_dot_f(&zAxis, eye);
+
+    return matrix4f_4v( vec4f(xAxis.x, yAxis.x, zAxis.x, 0.0f),
+                        vec4f(xAxis.y, yAxis.y, zAxis.y, 0.0f),
+                        vec4f(xAxis.z, yAxis.z, zAxis.z, 0.0f),
+                        vec4f(-t1,     -t2,     -t3,     1.0f)  );
 }
 
-Matrix_4f   CENGINE_CALL matrix4f_translate(Matrix_4f* m, const vec3_f* v)
+Matrix_4f*  CENGINE_CALL matrix4f_translate(Matrix_4f* m, const vec3_f* v)
 {
-    Matrix_4f matrix;
+    vec4_f translation   = vec4f(v->x, v->y, v->z, 1.0f);
+    vec4_f product       = matrix4f_multiply_vec4f(m, &translation);
 
-    return matrix;
+    m->_elements[3][0] = product.x;
+    m->_elements[3][1] = product.y;
+    m->_elements[3][2] = product.z;
+    m->_elements[3][3] = product.w;
+
+    return m;
 }
 
 Matrix_4f   CENGINE_CALL matrix4f_rotate(Matrix_4f* m, const vec3_f* v, float angle)
 {
-    Matrix_4f matrix;
+    float x = v->x;
+    float y = v->y;
+    float z = v->z;
 
-    return matrix;
+    float c = cos(angle);
+    float s = sin(angle);
+    float t = 1.0f - c;
+
+    float tx    = t * x;
+    float ty    = t * y;
+    float tz    = t * z;
+    float txy   = tx * y;
+    float txz   = tx * z;
+    float tyz   = ty * z;
+    float sx    = s * x;
+    float sy    = s * y;
+    float sz    = s * z;
+
+    m->_elements[0][0] = c + tx * x;
+    m->_elements[0][1] = txy + sz;
+    m->_elements[0][2] = txz - sy;
+
+    m->_elements[1][0] = txy - sz;
+    m->_elements[1][1] = c + ty * y;
+    m->_elements[1][2] = tyz + sx;
+
+    m->_elements[2][0] = txz + sy;
+    m->_elements[2][1] = tyz - sx;
+    m->_elements[2][2] = c + tz * z;
+
+    m->_elements[3][3] = 1.0f;
+
+    return *m;
 }
 
 Matrix_4f   CENGINE_CALL matrix4f_scale(Matrix_4f* m, const vec3_f* v)
 {
-    Matrix_4f matrix;
+    m->_elements[0][0] = v->x;
+    m->_elements[1][0] = v->y;
+    m->_elements[2][0] = v->z;
 
-    return matrix;
+    return *m;
 }
 
 Matrix_4f*  CENGINE_CALL matrix4f_transpose(Matrix_4f* m)
 {
-    Matrix_4f* matrix;
+    printf("Not implemented yet");
 
-    return matrix;
+    return m;
 }
 
 Matrix_4f*  CENGINE_CALL matrix4f_multiply(Matrix_4f* m1, const Matrix_4f* m2)
 {
-    Matrix_4f* matrix;
+    Matrix_4f temp = matrix4f_diagonal(1.0f);
 
-    return matrix;
+    // First Row ---------------------------------------------------------------
+    temp._elements[0][0] =  (   (m1->_elements[0][0] * m2->_elements[0][0]) +
+                                (m1->_elements[1][0] * m2->_elements[0][1]) +
+                                (m1->_elements[2][0] * m2->_elements[0][2]) +
+                                (m1->_elements[3][0] * m2->_elements[0][3]) );
+
+    temp._elements[0][1] =  (   (m1->_elements[0][1] * m2->_elements[0][0]) +
+                                (m1->_elements[1][1] * m2->_elements[0][1]) +
+                                (m1->_elements[2][1] * m2->_elements[0][2]) +
+                                (m1->_elements[3][1] * m2->_elements[0][3]) );
+
+    temp._elements[0][2] =  (   (m1->_elements[0][2] * m2->_elements[0][0]) +
+                                (m1->_elements[1][2] * m2->_elements[0][1]) +
+                                (m1->_elements[2][2] * m2->_elements[0][2]) +
+                                (m1->_elements[3][2] * m2->_elements[0][3]) );
+
+    temp._elements[0][3] =  (   (m1->_elements[0][3] * m2->_elements[0][0]) +
+                                (m1->_elements[1][3] * m2->_elements[0][1]) +
+                                (m1->_elements[2][3] * m2->_elements[0][2]) +
+                                (m1->_elements[3][3] * m2->_elements[0][3]) );
+
+    // Second Row ---------------------------------------------------------------
+    temp._elements[1][0] =  (   (m1->_elements[0][0] * m2->_elements[1][0]) +
+                                (m1->_elements[1][0] * m2->_elements[1][1]) +
+                                (m1->_elements[2][0] * m2->_elements[1][2]) +
+                                (m1->_elements[3][0] * m2->_elements[1][3]) );
+
+    temp._elements[1][1] =  (   (m1->_elements[0][1] * m2->_elements[1][0]) +
+                                (m1->_elements[1][1] * m2->_elements[1][1]) +
+                                (m1->_elements[2][1] * m2->_elements[1][2]) +
+                                (m1->_elements[3][1] * m2->_elements[1][3]) );
+
+    temp._elements[1][2] =  (   (m1->_elements[0][2] * m2->_elements[1][0]) +
+                                (m1->_elements[1][2] * m2->_elements[1][1]) +
+                                (m1->_elements[2][2] * m2->_elements[1][2]) +
+                                (m1->_elements[3][2] * m2->_elements[1][3]) );
+
+    temp._elements[1][3] =  (   (m1->_elements[0][3] * m2->_elements[1][0]) +
+                                (m1->_elements[1][3] * m2->_elements[1][1]) +
+                                (m1->_elements[2][3] * m2->_elements[1][2]) +
+                                (m1->_elements[3][3] * m2->_elements[1][3]) );
+    // Third Row ---------------------------------------------------------------
+    temp._elements[2][0] =  (   (m1->_elements[0][0] * m2->_elements[2][0]) +
+                                (m1->_elements[1][0] * m2->_elements[2][1]) +
+                                (m1->_elements[2][0] * m2->_elements[2][2]) +
+                                (m1->_elements[3][0] * m2->_elements[2][3]) );
+
+    temp._elements[2][1] =  (   (m1->_elements[0][1] * m2->_elements[2][0]) +
+                                (m1->_elements[1][1] * m2->_elements[2][1]) +
+                                (m1->_elements[2][1] * m2->_elements[2][2]) +
+                                (m1->_elements[3][1] * m2->_elements[2][3]) );
+
+    temp._elements[2][2] =  (   (m1->_elements[0][2] * m2->_elements[2][0]) +
+                                (m1->_elements[1][2] * m2->_elements[2][1]) +
+                                (m1->_elements[2][2] * m2->_elements[2][2]) +
+                                (m1->_elements[3][2] * m2->_elements[2][3]) );
+
+    temp._elements[2][3] =  (   (m1->_elements[0][3] * m2->_elements[2][0]) +
+                                (m1->_elements[1][3] * m2->_elements[2][1]) +
+                                (m1->_elements[2][3] * m2->_elements[2][2]) +
+                                (m1->_elements[3][3] * m2->_elements[2][3]) );
+
+    // Fourth Row ---------------------------------------------------------------
+    temp._elements[3][0] =  (   (m1->_elements[0][0] * m2->_elements[3][0]) +
+                                (m1->_elements[1][0] * m2->_elements[3][1]) +
+                                (m1->_elements[2][0] * m2->_elements[3][2]) +
+                                (m1->_elements[3][0] * m2->_elements[3][3]) );
+
+    temp._elements[3][1] =  (   (m1->_elements[0][1] * m2->_elements[3][0]) +
+                                (m1->_elements[1][1] * m2->_elements[3][1]) +
+                                (m1->_elements[2][1] * m2->_elements[3][2]) +
+                                (m1->_elements[3][1] * m2->_elements[3][3]) );
+
+    temp._elements[3][2] =  (   (m1->_elements[0][2] * m2->_elements[3][0]) +
+                                (m1->_elements[1][2] * m2->_elements[3][1]) +
+                                (m1->_elements[2][2] * m2->_elements[3][2]) +
+                                (m1->_elements[3][2] * m2->_elements[3][3]) );
+
+    temp._elements[3][3] =  (   (m1->_elements[0][3] * m2->_elements[3][0]) +
+                                (m1->_elements[1][3] * m2->_elements[3][1]) +
+                                (m1->_elements[2][3] * m2->_elements[3][2]) +
+                                (m1->_elements[3][3] * m2->_elements[3][3]) );
+
+    *m1 = temp;
+    return m1;
+}
+
+vec4_f      CENGINE_CALL matrix4f_multiply_vec4f(Matrix_4f* m, const vec4_f* v)
+{
+    vec4_f temp;
+
+    temp.x = m->_elements[0][1] * v->x + m->_elements[1][1] * v->y + m->_elements[2][2] * v->z + m->_elements[3][3] * v->w;
+    temp.y = m->_elements[0][1] * v->x + m->_elements[1][1] * v->y + m->_elements[2][2] * v->z + m->_elements[3][3] * v->w;
+    temp.z = m->_elements[0][1] * v->x + m->_elements[1][1] * v->y + m->_elements[2][2] * v->z + m->_elements[3][3] * v->w;
+    temp.w = m->_elements[0][1] * v->x + m->_elements[1][1] * v->y + m->_elements[2][2] * v->z + m->_elements[3][3] * v->w;
+
+    return temp;
 }
 
 float*      CENGINE_CALL matrix4f_value(const Matrix_4f* matrix)
@@ -199,4 +345,6 @@ float*      CENGINE_CALL matrix4f_value(const Matrix_4f* matrix)
     elements[13]    = matrix->_elements[1][3];
     elements[14]    = matrix->_elements[2][3];
     elements[15]    = matrix->_elements[3][3];
+
+    return elements;
 }

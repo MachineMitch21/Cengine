@@ -38,6 +38,7 @@ extern "C"
     // vec3_f functions
     CENGINE_API vec3_f      CENGINE_CALL vec3f(float x, float y, float z);
     CENGINE_API float       CENGINE_CALL vec3_magnitude_f(const vec3_f* v);
+    CENGINE_API vec3_f      CENGINE_CALL vec3_normalize_f(const vec3_f* v);
     CENGINE_API float       CENGINE_CALL vec3_dot_f(const vec3_f* v1, const vec3_f* v2);
     CENGINE_API vec3_f      CENGINE_CALL vec3_cross_f(const vec3_f* v1, const vec3_f* v2);
     CENGINE_API vec3_f      CENGINE_CALL vec3_add_f(const vec3_f* v1, const vec3_f* v2);
