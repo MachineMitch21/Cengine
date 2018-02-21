@@ -3,6 +3,12 @@
 #include <string.h>
 #include <memory.h>
 
+struct Shader_s {
+    GLuint  _program;
+    GLuint  _handles[MAX_SHADERS];
+    char*   _srcs[MAX_SHADERS];
+};
+
 CENGINE_API SHADER* CENGINE_CALL new_shader_f(const char* vs_path, const char* fs_path)
 {
     SHADER* shader = new_shader();
@@ -31,16 +37,14 @@ CENGINE_API SHADER* CENGINE_CALL new_shader()
 
 CENGINE_API void    CENGINE_CALL free_shader(SHADER* shader)
 {
-    int i;
-    for (i = 0; i < MAX_SHADERS; i++)
-    {
-        glDetachShader(shader->_program, shader->_handles[i]);
-        glDeleteShader(shader->_handles[i]);
-        free(shader->_srcs[i]);
-    }
     glDeleteProgram(shader->_program);
     shader = NULL;
     free(shader);
+}
+
+CENGINE_API void    CENGINE_CALL shader_use_p(SHADER* shader)
+{
+    glUseProgram(shader->_program);
 }
 
 CENGINE_API char*   CENGINE_CALL shader_load_vs(SHADER* shader, const char* file_path)
@@ -126,7 +130,15 @@ CENGINE_API int*    CENGINE_CALL shader_compile(SHADER* shader)
         {
             glAttachShader(shader->_program, shader->_handles[i]);
         }
+        
         glLinkProgram(shader->_program);
+
+        for (i = 0; i < MAX_SHADERS; i++)
+        {
+            glDetachShader(shader->_program, shader->_handles[i]);
+            glDeleteShader(shader->_handles[i]);
+            free(shader->_srcs[i]);
+        }
 
         glGetProgramiv(shader->_program, GL_LINK_STATUS, &result);
         glGetProgramiv(shader->_program, GL_INFO_LOG_LENGTH, &infoLogLength);

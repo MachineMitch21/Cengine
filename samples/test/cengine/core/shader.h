@@ -13,11 +13,7 @@
 #define VERTEX_SHADER 0
 #define FRAGMENT_SHADER 1
 
-typedef struct {
-    GLuint  _program;
-    GLuint  _handles[MAX_SHADERS];
-    char*   _srcs[MAX_SHADERS];
-} SHADER;
+typedef struct Shader_s SHADER;
 
 #ifdef __cplusplus
 extern "C"
@@ -27,6 +23,7 @@ extern "C"
     CENGINE_API SHADER* CENGINE_CALL new_shader_f(const char* vs_path, const char* fs_path);
     CENGINE_API SHADER* CENGINE_CALL new_shader();
     CENGINE_API void    CENGINE_CALL free_shader(SHADER* shader);
+    CENGINE_API void    CENGINE_CALL shader_use_p(SHADER* shader);
     CENGINE_API char*   CENGINE_CALL shader_load_vs(SHADER* shader, const char* file_path);
     CENGINE_API char*   CENGINE_CALL shader_load_fs(SHADER* shader, const char* file_path);
     CENGINE_API char*   CENGINE_CALL shader_load_file(SHADER* shader, const char* file_path, GLenum type);

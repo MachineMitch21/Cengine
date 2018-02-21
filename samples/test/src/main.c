@@ -13,7 +13,8 @@ int main(int argc, char** argv)
 
     init_input(p_window);
 
-    SHADER* shader = new_shader_f("F:\\Code\\Cengine\\samples\\test\\resources\\shaders\\test.vs", "F:\\Code\\Cengine\\samples\\test\\resources\\shaders\\test.fs");
+    SHADER* shader = new_shader_f(  "F:\\Code\\Cengine\\samples\\test\\resources\\shaders\\test.vs",
+                                    "F:\\Code\\Cengine\\samples\\test\\resources\\shaders\\test.fs" );
 
     const GLfloat g_vertex_buffer_data[] = {
         -1.0f, -1.0f, 0.0f,
@@ -41,7 +42,7 @@ int main(int argc, char** argv)
             window_close(p_window);
         }
 
-        glUseProgram(shader->_program);
+        shader_use_p(shader);
 
         glEnableVertexAttribArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
